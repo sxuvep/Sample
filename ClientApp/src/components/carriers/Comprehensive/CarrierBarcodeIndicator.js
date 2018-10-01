@@ -9,7 +9,6 @@ class CarrierBarcodeIndicator extends React.Component {
 			strokeLinecap: 'round',
 			strokeLinejoin: 'round',
 			strokeMiterlimit: 10,
-			fill: 'blue',
 		};
 
 		this.state = {

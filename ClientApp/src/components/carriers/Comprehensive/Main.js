@@ -12,19 +12,21 @@ import {
 	Col,
 	Row,
 	Radio,
-	FormControl,
-	ControlLabel,
-	FormGroup,
-	Form,
+	Breadcrumb,
+	ButtonToolbar,
+	Button,
+	Glyphicon,
 } from 'react-bootstrap';
 import AstRadioOptions from './AstRadioOptions';
+import CarrierBarcodeTextBox from './CarrierBarcodeTextBox';
+import SamplePrepDataEntryForm from './SamplePrepDataEntryForm';
+import InitialInstructions from './InitialInstructions';
 
 class RenderSvg extends React.Component {
 	constructor(props) {
 		super(props);
 
 		var defaultStyle = {
-			fill: 'none',
 			stroke: '#000000',
 			strokeLinecap: 'round',
 			strokeLinejoin: 'round',
@@ -36,7 +38,13 @@ class RenderSvg extends React.Component {
 			showAstOptions: false,
 			IsComprehensive: false,
 			IndicatorFill: 'none',
-			CarrierBarcode: ' ',
+			carrierFill: 'none',
+			positionOneFill: 'none',
+			positionTwoFill: 'none',
+			positionThreeFill: 'none',
+			positionFourFill: 'none',
+			showSampleForm: false,
+			showInitialInstructions: false,
 		};
 
 		this.handleCarrierTypeChange = this.handleCarrierTypeChange.bind(this);
@@ -71,45 +79,35 @@ class RenderSvg extends React.Component {
 		}
 	}
 
-	getCarrierBarcodeValidation() {
-		const length = this.state.CarrierBarcode.length;
-		if (length > 10) return 'success';
-		else if (length > 5) return 'warning';
-		else if (length > 0) return 'error';
-		return null;
-	}
+	onValidBarcodeClick = () => {
+		this.setState({
+			positionOneFill: 'black',
+			showSampleForm: true,
+			IndicatorFill: 'none',
+			showInitialInstructions: true,
+		});
+	};
 
-	carrierBarcodeChange = e => {
-		this.setState({ CarrierBarcode: e.target.value });
+	topLevelDivStyle = {
+		border: '1px solid black',
+		marginRight: '100px',
+	};
+
+	emptyDivStyle = {
+		height: '50px',
+		width: '100px',
 	};
 
 	render() {
 		return (
-			<div>
+			<div style={this.topLevelDivStyle}>
+				<Breadcrumb>
+					<Breadcrumb.Item href="#">Site Software</Breadcrumb.Item>
+					<Breadcrumb.Item>Sample Preparation</Breadcrumb.Item>
+				</Breadcrumb>
+
 				<Grid>
-					{this.state.IndicatorFill == 'blue' && (
-						<Row>
-							<Col mdOffset={1} md={5}>
-								<Form inline>
-									<FormGroup
-										controlId="barcodeText"
-										validationState={this.getCarrierBarcodeValidation()}
-									>
-										<ControlLabel>
-											Enter Carrier Barcode:
-										</ControlLabel>{' '}
-										<FormControl
-											type="text"
-											value={this.state.CarrierBarcode}
-											placeholder="Enter Carrier Barcode"
-											onChange={this.carrierBarcodeChange}
-										/>
-										<FormControl.Feedback />
-									</FormGroup>
-								</Form>
-							</Col>
-						</Row>
-					)}
+					{this.state.IndicatorFill == 'blue' && <CarrierBarcodeTextBox />}
 
 					<Row>
 						<Col md={6}>
@@ -121,47 +119,35 @@ class RenderSvg extends React.Component {
 								style={this.svgStyle}
 							>
 								<g id="standardCarrierGroup">
-									<EmptyCarrier
-										emptyCarrierStyle={this.state.DefaultStyle}
-									/>
+									<EmptyCarrier emptyCarrierStyle={this.state.DefaultStyle} />
 									{this.state.showAstOptions &&
 										this.state.IsComprehensive && (
 											<g>
 												<StandardCarrierPositionFour
-													sectorStyle={
-														this.state.DefaultStyle
-													}
+													sectorStyle={this.state.DefaultStyle}
+													carrierFill={this.state.positionFourFill}
 												/>
 
 												<StanardCarrierPositionOne
-													sectorStyle={
-														this.state.DefaultStyle
-													}
+													sectorStyle={this.state.DefaultStyle}
+													carrierFill={this.state.positionOneFill}
 												/>
 												<StandardCarrierPositionTwo
-													sectorStyle={
-														this.state.DefaultStyle
-													}
+													sectorStyle={this.state.DefaultStyle}
+													carrierFill={this.state.positionTwoFill}
 												/>
 												<StandardCarrierPositionThree
-													sectorStyle={
-														this.state.DefaultStyle
-													}
+													sectorStyle={this.state.DefaultStyle}
+													carrierFill={this.state.positionThreeFill}
 												/>
 												<FirstTrough
-													troughStyle={
-														this.state.DefaultStyle
-													}
+													troughStyle={this.state.DefaultStyle}
 												/>
 												<SecondTrough
-													troughStyle={
-														this.state.DefaultStyle
-													}
+													troughStyle={this.state.DefaultStyle}
 												/>
 												<CarrierBarcodeIndicator
-													IndicatorFill={
-														this.state.IndicatorFill
-													}
+													IndicatorFill={this.state.IndicatorFill}
 												/>
 											</g>
 										)}
@@ -169,18 +155,45 @@ class RenderSvg extends React.Component {
 							</svg>
 						</Col>
 
-						<Col md={6}>
-							<Radio id="astRadio" onClick={this.onAstRadioClick}>
-								AST
-							</Radio>
+						{this.state.showInitialInstructions && (
+							<Col md={3}>
+								<InitialInstructions />
+							</Col>
+						)}
 
-							{this.state.showAstOptions ? (
-								<AstRadioOptions
-									carrierTypechange={this.handleCarrierTypeChange}
-								/>
-							) : null}
-						</Col>
+						{!this.state.showInitialInstructions && (
+							<Col md={3}>
+								<div style={this.emptyDivStyle} />
+								<Radio id="astRadio" onClick={this.onAstRadioClick}>
+									AST
+								</Radio>
+
+								{this.state.showAstOptions ? (
+									<AstRadioOptions
+										carrierTypechange={this.handleCarrierTypeChange}
+									/>
+								) : null}
+
+								<Radio id="qcRadio">QC</Radio>
+							</Col>
+						)}
+
+						{this.state.IndicatorFill == 'blue' && (
+							<Col md={2}>
+								<ButtonToolbar>
+									<Button onClick={this.onValidBarcodeClick}>
+										Next
+										<Glyphicon glyph="glyphicon glyphicon-chevron-right" />
+									</Button>
+								</ButtonToolbar>
+							</Col>
+						)}
 					</Row>
+					{this.state.showSampleForm && (
+						<Row>
+							<SamplePrepDataEntryForm />
+						</Row>
+					)}
 				</Grid>
 			</div>
 		);

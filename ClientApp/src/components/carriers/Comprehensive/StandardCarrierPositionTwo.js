@@ -11,17 +11,20 @@ class StandardCarrierPositionTwo extends React.Component {
 				<polyline
 					id={2}
 					style={this.props.sectorStyle}
+					fill={this.props.carrierFill}
 					points="87.7,127.1 10.8,127.1 10.8,220.4 142.7,220.4 142.7,106.3"
 				/>
 
 				<polyline
 					style={this.props.sectorStyle}
+					fill={this.props.carrierFill}
 					points="142.7,106.3 108.5,106.3 87.7,127.1 		"
 				/>
 
 				<g id="secondTube">
 					<path
 						style={this.props.sectorStyle}
+						fill={this.props.carrierFill}
 						d="M133.9,121.6c-3.4,0-6.2-2.8-6.2-6.2s2.8-6.2,6.2-6.2s6.2,2.8,6.2,6.2C140.1,118.8,137.3,121.6,133.9,121.6
 			L133.9,121.6z"
 					/>
